@@ -3,71 +3,9 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_c_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组C"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_d_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组D"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_e_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组E"
-                android:gravity="bottom|center_horizontal" />
-
-            <Button
-                android:id="@+id/button_f_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组F"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_g_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组G"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_a_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组A"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_b_l"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字组B"
-                android:gravity="bottom|center_horizontal" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
             <Button
                 android:id="@+id/button_c"
@@ -120,77 +58,65 @@
                 android:text="小字一组B"
                 android:gravity="bottom|center_horizontal" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/button_c_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组C"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_d_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组D"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_e_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组E"
-                android:gravity="bottom|center_horizontal" />
 
-            <Button
-                android:id="@+id/button_f_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组F"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_g_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组G"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_a_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组A"
-                android:gravity="bottom|center_horizontal" />
-            <Button
-                android:id="@+id/button_b_h"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_style"
-                android:text="小字二组B"
-                android:gravity="bottom|center_horizontal" />
-        </LinearLayout>
-    </LinearLayout>
-
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <Button
-            android:layout_gravity="top"
+            android:layout_gravity="top|center"
             android:id="@+id/bug_button"
             android:text="@string/bug_tool"
-            android:background="@drawable/button_style"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
             android:textSize="20sp"
-            android:layout_marginStart="40dp"
-            android:layout_marginLeft="40dp"
             android:layout_marginTop="20dp"/>
-
+        <TextView
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已演奏时间"
+            android:textSize="20sp"/>
+        <Chronometer
+            android:id="@+id/chronometer"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:textSize="30sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="演奏进度"
+            android:textSize="20sp"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            style="@android:style/Widget.Holo.ProgressBar.Large"
+            android:progress="10"
+            android:indeterminate="false" />
+        <Button
+            android:id="@+id/high"
+            android:layout_marginLeft="5dp"
+            android:text="高音"
+            android:textSize="25sp"
+            android:background="@drawable/button_style"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp" />
+        <Button
+            android:id="@+id/low"
+            android:layout_marginLeft="5dp"
+            android:text="低音"
+            android:textSize="25sp"
+            android:background="@drawable/button_style"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
 
 
 </LinearLayout>
