@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">智能钢琴</string>
+    <string name="bug_tool">智能提示</string>
+    <string name="music_hint">请选择您想演奏的歌曲:</string>
+</resources>
