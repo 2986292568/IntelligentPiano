@@ -1,64 +1,51 @@
 package com.zlcn.zhenling.simplepiano;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
+import android.os.SystemClock;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.Chronometer;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends FirstActivity{
 
-
-    public final static String TAG="TAG";
-
-    public int little_star=0;
-    public int mo_li_hua=0;
-
-    private Button buttonC;
-    private Button buttonD;
-    private Button buttonE;
-    private Button buttonF;
-    private Button buttonG;
-    private Button buttonA;
-    private Button buttonB;
-
-    private Button buttonC_L;
-    private Button buttonD_L;
-    private Button buttonE_L;
-    private Button buttonF_L;
-    private Button buttonG_L;
-    private Button buttonA_L;
-    private Button buttonB_L;
-
-    private Button buttonC_H;
-    private Button buttonD_H;
-    private Button buttonE_H;
-    private Button buttonF_H;
-    private Button buttonG_H;
-    private Button buttonA_H;
-    private Button buttonB_H;
-
-    private Button bugButton;
-    private MediaPlayer mediaPlayer;
-
-    String APP_FIRST_USE="app_first_use";
-
+    
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //初始化音乐播放系统
         mediaPlayer=new MediaPlayer();
+        mediaPlayer_C=new MediaPlayer();
+        mediaPlayer_D=new MediaPlayer();
+        mediaPlayer_E=new MediaPlayer();
+        mediaPlayer_F=new MediaPlayer();
+        mediaPlayer_G=new MediaPlayer();
+        mediaPlayer_A=new MediaPlayer();
+        mediaPlayer_B=new MediaPlayer();
+
+        //初始化界面系统
+        chronometer= (Chronometer) findViewById(R.id.chronometer_m);
+        progressBar= (ProgressBar) findViewById(R.id.progress_bar);
+        true_text= (TextView) findViewById(R.id.true_number);
+        false_text= (TextView) findViewById(R.id.false_number);
+        true_percent_text= (TextView) findViewById(R.id.true_percent);
+        level_text= (TextView) findViewById(R.id.level);
+
         //小字一组按键绑定
         buttonC= (Button) findViewById(R.id.button_c);
         buttonD= (Button) findViewById(R.id.button_d);
@@ -68,793 +55,47 @@ public class MainActivity extends AppCompatActivity{
         buttonA= (Button) findViewById(R.id.button_a);
         buttonB= (Button) findViewById(R.id.button_b);
         bugButton= (Button) findViewById(R.id.bug_button);
-        //小字组按键绑定
-        buttonC_L= (Button) findViewById(R.id.button_c_l);
-        buttonD_L= (Button) findViewById(R.id.button_d_l);
-        buttonE_L= (Button) findViewById(R.id.button_e_l);
-        buttonF_L= (Button) findViewById(R.id.button_f_l);
-        buttonG_L= (Button) findViewById(R.id.button_g_l);
-        buttonA_L= (Button) findViewById(R.id.button_a_l);
-        buttonB_L= (Button) findViewById(R.id.button_b_l);
-        //小字二组按键绑定
-        buttonC_H= (Button) findViewById(R.id.button_c_h);
-        buttonD_H= (Button) findViewById(R.id.button_d_h);
-        buttonE_H= (Button) findViewById(R.id.button_e_h);
-        buttonF_H= (Button) findViewById(R.id.button_f_h);
-        buttonG_H= (Button) findViewById(R.id.button_g_h);
-        buttonA_H= (Button) findViewById(R.id.button_a_h);
-        buttonB_H= (Button) findViewById(R.id.button_b_h);
+        button_LOW= (Button) findViewById(R.id.button_low);
+        button_HIGH= (Button) findViewById(R.id.button_high);
 
+        //初始化积分系统
+        SharedPreferences firstSp=getSharedPreferences(FIRST_USE,0);
+        Boolean firstUseBboolean=firstSp.getBoolean("firstUse",true);
+        if(firstUseBboolean){
+            SharedPreferences.Editor scoreEditor=getSharedPreferences("allScore",MODE_PRIVATE).edit();
+            scoreEditor.putInt("allScore",0);
+            scoreEditor.commit();
+            firstSp.edit().putBoolean("firstUse",false).commit();
+        }
 
-        //小字一组按键监听事件
-        buttonC.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.c);
-                    buttonC.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(little_star==2){
-                        little_star++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(little_star==14){
-                        little_star++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(little_star==30){
-                        little_star++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(little_star==42){
-                        little_star++;
-                        buttonC.setTextColor(Color.BLACK);
-                        Toast.makeText(MainActivity.this,"恭喜您已成功演奏完小星星",Toast.LENGTH_SHORT).show();
-                    }
-                    if(mo_li_hua==38){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==40){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==43){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==56){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonA_L.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==60){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==63){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==65){
-                        mo_li_hua++;
-                        buttonC.setTextColor(Color.BLACK);
-                        buttonA_L.setTextColor(Color.RED);
-                    }
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonC.setBackgroundResource(R.drawable.button_style);
-                    if(little_star==1){
-                        little_star++;
-                    }
-                    if(little_star==29){
-                        little_star++;
-                    }
-                    if(little_star==42){
-                        little_star++;
-                    }
-                    if(mo_li_hua==37){
-                        mo_li_hua++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonD.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.d);
-                    buttonD.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(little_star==13){
-                        little_star++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(little_star==21){
-                        little_star++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(little_star==28){
-                        little_star++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(little_star==41){
-                        little_star++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==32){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==36){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==39){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==42){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==45){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==51){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==54){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==61){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==64){
-                        mo_li_hua++;
-                        buttonD.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonD.setBackgroundResource(R.drawable.button_style);
-                    if(little_star==12){
-                        little_star++;
-                    }
-                    if(little_star==40){
-                        little_star++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonE.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.e);
-                    buttonE.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(little_star==11){
-                        little_star++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(little_star==20){
-                        little_star++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(little_star==27){
-                        little_star++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(little_star==39){
-                        little_star++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==2){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==13){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==26){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==31){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==33){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==35){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==41){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==44){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==46){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==52){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==55){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==62){
-                        mo_li_hua++;
-                        buttonE.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonE.setBackgroundResource(R.drawable.button_style);
-                    if(little_star==10){
-                        little_star++;
-                    }
-                    if(little_star==19){
-                        little_star++;
-                    }
-                    if(little_star==26){
-                        little_star++;
-                    }
-                    if(little_star==38){
-                        little_star++;
-                    }
-                    if(mo_li_hua==1){
-                        mo_li_hua++;
-                    }
-                    if(mo_li_hua==12){
-                        mo_li_hua++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonF.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.f);
-                    buttonF.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(little_star==9){
-                        little_star++;
-                        buttonF.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(little_star==18){
-                        little_star++;
-                        buttonF.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(little_star==25){
-                        little_star++;
-                        buttonF.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(little_star==37){
-                        little_star++;
-                        buttonF.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonF.setBackgroundResource(R.drawable.button_style);
-                    if(little_star==8){
-                        little_star++;
-                    }
-                    if(little_star==17){
-                        little_star++;
-                    }
-                    if(little_star==24){
-                        little_star++;
-                    }
-                    if(little_star==36){
-                        little_star++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonG.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.g);
-                    buttonG.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(little_star==4){
-                        little_star++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(little_star==7){
-                        little_star++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonF.setTextColor(Color.RED);
-                    }
-                    if(little_star==16){
-                        little_star++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonF.setTextColor(Color.RED);
-                    }
-                    if(little_star==23){
-                        little_star++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonF.setTextColor(Color.RED);
-                    }
-                    if(little_star==32){
-                        little_star++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(little_star==35){
-                        little_star++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonF.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==3){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==9){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==11){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==14){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==20){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==25){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==27){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==30){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==34){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonE.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==47){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==50){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==53){
-                        mo_li_hua++;
-                        buttonG.setTextColor(Color.BLACK);
-                        buttonD.setTextColor(Color.RED);
-                    }
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonG.setBackgroundResource(R.drawable.button_style);
-                    if(little_star==3){
-                        little_star++;
-                    }
-                    if(little_star==15){
-                        little_star++;
-                    }
-                    if(little_star==22){
-                        little_star++;
-                    }
-                    if(little_star==31){
-                        little_star++;
-                    }
-                    if(mo_li_hua==8){
-                        mo_li_hua++;
-                    }
-                    if (mo_li_hua==19){
-                        mo_li_hua++;
-                    }
-                    if(mo_li_hua==24){
-                        mo_li_hua++;
-                    }
-                    if(mo_li_hua==23){
-                        mo_li_hua++;
-                    }
-                    if(mo_li_hua==22){
-                        mo_li_hua++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonA.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.a);
-                    buttonA.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(little_star==6){
-                        little_star++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(little_star==34){
-                        little_star++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==4){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonC_H.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==7){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==10){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==15){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonC_H.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==18){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==21){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==29){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==48){
-                        mo_li_hua++;
-                        buttonA.setTextColor(Color.BLACK);
-                        buttonC_H.setTextColor(Color.RED);
-                    }
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonA.setBackgroundResource(R.drawable.button_style);
-                    if(little_star==5){
-                        little_star++;
-                    }
-                    if(little_star==33){
-                        little_star++;
-                    }
-                    if(mo_li_hua==28){
-                        mo_li_hua++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonB.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    play(R.raw.b);
-                    buttonB.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if(event.getAction()==MotionEvent.ACTION_UP){
-                    buttonB.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        //小字组按键监听事件
-        buttonC_L.setOnTouchListener(new View.OnTouchListener() {
+        button_LOW.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.c_l);
-                    buttonC_L.setBackgroundResource(R.drawable.button_pressed_style);
+                    low=1;
+                    button_LOW.setBackgroundResource(R.drawable.button_pressed_style);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonC_L.setBackgroundResource(R.drawable.button_style);
+                    button_LOW.setBackgroundResource(R.drawable.button_style);
+                    low=0;
                 }
                 return false;
             }
         });
-        buttonD_L.setOnTouchListener(new View.OnTouchListener() {
+        button_HIGH.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.d_l);
-                    buttonD_L.setBackgroundResource(R.drawable.button_pressed_style);
+                    high=1;
+                    button_HIGH.setBackgroundResource(R.drawable.button_pressed_style);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonD_L.setBackgroundResource(R.drawable.button_style);
+                    button_HIGH.setBackgroundResource(R.drawable.button_style);
+                    high=0;
                 }
                 return false;
             }
         });
-        buttonE_L.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.e_l);
-                    buttonE_L.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonE_L.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonF_L.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.f_l);
-                    buttonF_L.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonF_L.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonG_L.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.g_l);
-                    buttonG_L.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(mo_li_hua==58){
-                        mo_li_hua++;
-                        buttonG_L.setTextColor(Color.BLACK);
-                        buttonA_L.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==67){
-                        mo_li_hua++;
-                        buttonG_L.setTextColor(Color.BLACK);
-                        Toast.makeText(MainActivity.this,"恭喜您已成功演奏完茉莉花！",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonG_L.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonA_L.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.a_l);
-                    buttonA_L.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(mo_li_hua==57){
-                        mo_li_hua++;
-                        buttonA_L.setTextColor(Color.BLACK);
-                        buttonG_L.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==59){
-                        mo_li_hua++;
-                        buttonA_L.setTextColor(Color.BLACK);
-                        buttonC.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==66){
-                        mo_li_hua++;
-                        buttonA_L.setTextColor(Color.BLACK);
-                        buttonG_L.setTextColor(Color.RED);
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonA_L.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonB_L.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.b_l);
-                    buttonB_L.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonB_L.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        //小字二组按键监听事件
-        buttonC_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.c_h);
-                    buttonC_H.setBackgroundResource(R.drawable.button_pressed_style);
-                    if(mo_li_hua==6){
-                        mo_li_hua++;
-                        buttonC_H.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==17){
-                        mo_li_hua++;
-                        buttonC_H.setTextColor(Color.BLACK);
-                        buttonA.setTextColor(Color.RED);
-                    }
-                    if(mo_li_hua==49){
-                        mo_li_hua++;
-                        buttonC_H.setTextColor(Color.BLACK);
-                        buttonG.setTextColor(Color.RED);
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonC_H.setBackgroundResource(R.drawable.button_style);
-                    if(mo_li_hua==5){
-                        mo_li_hua++;
-                    }
-                    if(mo_li_hua==16){
-                        mo_li_hua++;
-                    }
-                }
-                return false;
-            }
-        });
-        buttonD_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.d_h);
-                    buttonD_H.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonD_H.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonE_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.e_h);
-                    buttonE_H.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonE_H.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonF_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.f_h);
-                    buttonF_H.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonF_H.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonG_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.g_h);
-                    buttonG_H.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonG_H.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonA_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.a_h);
-                    buttonA_H.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonA_H.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-        buttonB_H.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    play(R.raw.b_h);
-                    buttonB_H.setBackgroundResource(R.drawable.button_pressed_style);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    buttonB_H.setBackgroundResource(R.drawable.button_style);
-                }
-                return false;
-            }
-        });
-
-
-
 
         bugButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -867,8 +108,10 @@ public class MainActivity extends AppCompatActivity{
                 buttonG.setTextColor(Color.BLACK);
                 buttonA.setTextColor(Color.BLACK);
                 buttonB.setTextColor(Color.BLACK);
-                //歌曲初始化
-                little_star=0;
+                button_HIGH.setTextColor(Color.BLACK);
+                button_LOW.setTextColor(Color.BLACK);
+                //界面初始化
+                viewInit();
                 //进入歌曲选择界面
                 Intent intent=new Intent(MainActivity.this,SoundSelect.class);
                 startActivityForResult(intent,1);
@@ -876,36 +119,479 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    //音乐播放
-    private void play(int position) {
-        try{
-                mediaPlayer.release();
-                mediaPlayer=MediaPlayer.create(MainActivity.this,position);
-                mediaPlayer.start();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1){
             if(resultCode==RESULT_OK){
+                //判断选择的歌曲
                 int soundNum=data.getIntExtra("soundNum",-1);
                 if(soundNum==0){
-                    buttonC.setTextColor(Color.RED);
-                    little_star=1;
+                    int[] huaDie={-3,-5,-6,1,2,-6,1,-5,5,8,6,5,3,5,2,2,2,3,-7,-6,-5,-6,1,2,-3,1,-6,-5,-6,1,-5,3,5,-7,2,-6,1,-5,-3,-5,-3,-5,-6,-7,2,-6,-5,-6,1,2,5,3,2,3,2,1,-6,-5,-3,1,-6,1,-6,-5,-3,-5,-6,1,-5};
+                    musicSimple=huaDie;
+                    musicMax=huaDie.length;
+                    musicNum=0;
+                    soundName="化蝶";
+                    sound();
+                    buttonE.setTextColor(Color.RED);
+                    button_LOW.setTextColor(Color.RED);
+                    chronometer.start();
                 }
                 if(soundNum==1){
+                    int[] moLiHua={3,3,5,6,8,8,6,5,5,6,5,3,3,5,6,8,8,6,5,5,6,5,5,5,5,3,5,6,6,5,3,2,3,5,3,2,1,1,2,1,3,2,1,3,2,3,5,6,8,5,2,3,5,2,3,1,-6,-5,-6,1,2,3,1,2,1,-6,-5};
+                    musicSimple=moLiHua;
+                    musicMax=moLiHua.length;
+                    musicNum=0;
+                    soundName="茉莉花";
+                    sound();
                     buttonE.setTextColor(Color.RED);
-                    mo_li_hua=1;
+                    chronometer.start();
                 }
+                if(soundNum==2){
+                    int[] juHuaTai={3,3,2,3,3,5,3,2,3,1,1,2,3,5,3,2,2,1,2,3,5,3,6,5,6,5,5,3,5,-5,3,2,2,5,3,2,2,2,1,2,3,3,2,3,3,5,3,2,3,1,1,2,3,5,3,2,2,1,2,3,5,3,6,5,6,5,5,3,5,3,2,3,5,3,2,2,1,1,2,3,3,5,6,6,10,10,9,8,6,5,6,5,3,2,1,-6,1,2,2,1,2,1,2,3,3,5,6,6,10,9,8,8,9,8,5,5,3,7,8,1,2,3,2,1};
+                    musicSimple=juHuaTai;
+                    musicMax=juHuaTai.length;
+                    musicNum=0;
+                    soundName="菊花台";
+                    sound();
+                    buttonE.setTextColor(Color.RED);
+                    chronometer.start();
+                }
+                if(soundNum==3){
+                    int[] chunJiangHuaYueYe={6,6,6,8,9,6,5,5,6,5,5,6,8,9,3,3,2,3,5,3,5,6,8,9,10,8,9,10,8,9,6,5,5,8,9,6,8,5,2,3,3,6,8,5,6,3,2,2,3,5,-6,-5,-6,1,2,3,2,1,2,3,1,2,2,9,9,9,10,12,10,9,8,8,9,6,5,8,10,9,10,9,10,9,9,9,10,12,10,12,10,9,8,10,9,10,8,10,9,10,8,10,9,10,8,9,10,9,8,6,5,5,6,3,5,6,8,5,5,8,9,6,8,5,4,3,2,1,3,2,3,6,8,5,6,5,3,2,3,2,1,2,3,1,2,10,10,10,12,10,10,9,2,3,6,8,5,5,8,6,8,9,6,8,5,2,3,3,6,8,5,6,5,3,2,2,3,5,3,5,3,2,8,10,9,10,8,10,9,10,8,5,6,8,9,9,10,12,10,12,10,9,8,8,8,8,9,10,6,6,6,8,5,3,3,3,5,3,3,3,5,6,8,9,10,8,9,10,9,8,6,5,5,6,5,5,6,8,9,3,3,6,8,5,6,5,3,2,3,2,1,2,3,1,2,2};
+                    musicSimple=chunJiangHuaYueYe;
+                    musicMax=chunJiangHuaYueYe.length;
+                    musicNum=0;
+                    soundName="春江花月夜";
+                    sound();
+                    buttonA.setTextColor(Color.RED);
+                    chronometer.start();
+                }
+                if(soundNum==4){
+                    int[] qingHuaCi={2,1,-6,1,1,-6,1,1,-6,1,-6,-5,2,1,-6,1,1,-6,1,1,3,2,1,1,-5,-6,3,3,3,2,3,3,2,3,5,3,3,3,3,3,2,2,2,2,2,1,3,3,2,2,1,-6,1,1,-6,1,1,-6,1,-6,-5,-5,-6,3,5,5,3,5,5,3,2,1,1,2,1,2,3,2,2,1,2,1,-6,2,1,1,-6,1,1,1,1,5,5,3,2,3,-6,2,3,5,3,2,5,5,3,2,3,-5,2,3,5,2,1,1,2,3,5,6,3,4,5,3,3,2,2,1,2,1,1,2,1,2,2,3,5,3,3,5,5,3,2,3,-6,2,3,5,3,2,5,5,3,2,3,-5,2,3,5,2,1,1,2,3,5,6,3,4,5,3,3,2,2,-5,3,2,2,2,1,1,3,5,6,5,3,2,1,2,5,5,2,1,1,2,3,2,1,-6,1,2,3,6,5,2,1,-6,2,1,5,5,3,2,3,-6,2,3,5,3,2,5,5,3,2,3,-5,2,3,5,2,1,1,2,3,5,6,3,4,5,3,3,2,2,1,2,1,1,2,1,2,2,3,5,3,3,5,5,3,2,3,-6,2,3,5,3,2,5,5,3,2,3,-5,2,3,5,2,1,1,2,3,5,6,3,4,5,3,3,2,2,-5,3,2,2,2,1,1};
+                    musicSimple=qingHuaCi;
+                    musicMax=qingHuaCi.length;
+                    musicNum=0;
+                    soundName="青花瓷";
+                    sound();
+                    buttonD.setTextColor(Color.RED);
+                    chronometer.start();
+                }
+
             }
         }
     }
 
+    //音乐播放
+    private void play(int position) {
+        try{
+            mediaPlayer.release();
+            mediaPlayer=MediaPlayer.create(this,position);
+            mediaPlayer.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //界面初始化
+    private void viewInit(){
+        //歌曲初始化
+        little_star=0;
+        mo_li_hua=0;
+        pressTime=0;
+        progress=0;
+        progressBar.setProgress(0);
+        true_text.setText("正确个数:0");
+        false_text.setText("错误个数:0");
+        true_percent_text.setText("正确率:0");
+        chronometer.setBase(SystemClock.elapsedRealtime());
+    }
+
+    //正确个数、错误个数、正确率判断
+    private void turePercent(int musicNum){
+            progress=(musicNum+1)*100/musicMax;
+            progressBar.setProgress(progress);
+            true_text.setText("正确个数:"+(musicNum+1));
+            false_text.setText("错误个数:"+(pressTime-musicNum-1));
+            true_percent_text.setText("正确率:"+((musicNum+1)*100/pressTime));
+    }
+
+    //计算总分数和显示提示信息
+    private void scoreSum(int musicMax){
+        score=musicMax*10-(pressTime-musicMax)*20-(int)((SystemClock.elapsedRealtime()-chronometer.getBase())/200);
+        SharedPreferences scoreSp=getSharedPreferences("allScore",MODE_PRIVATE);
+        allScore =scoreSp.getInt("allScore",0)+score;           //计算总分数
+        scoreSp.edit().putInt("allScore", allScore).commit();
+        //设置提示信息
+        AlertDialog.Builder dialog=new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("恭喜您已成功完成"+soundName+"的演奏");
+        dialog.setMessage("您获得了"+score+"积分");
+        dialog.setCancelable(false);
+        dialog.setNeutralButton("好的", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(allScore <500){
+                    level_text.setText("当前段位:初学弟子");
+                }else if(allScore >=500&& allScore <1500){
+                    level_text.setText("当前段位:江湖新秀");
+                }else if(allScore >=1500&& allScore <3000){
+                    level_text.setText("当前段位:江湖大侠");
+                }else if(allScore >=3000&& allScore <5000){
+                    level_text.setText("当前段位:江湖大侠");
+                }else if(allScore >=5000& allScore <=8000){
+                    level_text.setText("当前段位:一派掌门");
+                }else if (allScore >=8000&& allScore <15000){
+                    level_text.setText("当前段位:一代宗师");
+                }else if (allScore >=15000){
+                    level_text.setText("当前段位:独孤求败");
+                }
+            }
+        });
+        dialog.show();
+    }
+
+    private void sound(){
+        //小字一组按键监听事件
+        buttonC.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_C.isPlaying()) {
+                            play(R.raw.c_h);
+                        } else {
+                            mediaPlayer_C.release();
+                            mediaPlayer_C = MediaPlayer.create(MainActivity.this, R.raw.c_h);
+                            mediaPlayer_C.start();
+                        }
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_C.isPlaying()) {
+                            play(R.raw.c_l);
+                        } else {
+                            mediaPlayer_C.release();
+                            mediaPlayer_C = MediaPlayer.create(MainActivity.this, R.raw.c_l);
+                            mediaPlayer_C.start();
+                        }
+                    } else {
+                        if (mediaPlayer_C.isPlaying()) {
+                            play(R.raw.c);
+                        } else {
+                            mediaPlayer_C.release();
+                            mediaPlayer_C = MediaPlayer.create(MainActivity.this, R.raw.c);
+                            mediaPlayer_C.start();
+                        }
+                    }
+                    buttonC.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonC.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(8);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-1);
+                    }else{
+                        checkMusic(1);
+                    }
+                }
+                return false;
+            }
+        });
+        buttonD.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_D.isPlaying()) {
+                            play(R.raw.d_h);
+                        } else {
+                            mediaPlayer_D.release();
+                            mediaPlayer_D = MediaPlayer.create(MainActivity.this, R.raw.d_h);
+                            mediaPlayer_D.start();
+                        }
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_D.isPlaying()) {
+                            play(R.raw.d_l);
+                        } else {
+                            mediaPlayer_D.release();
+                            mediaPlayer_D = MediaPlayer.create(MainActivity.this, R.raw.d_l);
+                            mediaPlayer_D.start();
+                        }
+                    } else {
+                        if (mediaPlayer_D.isPlaying()) {
+                            play(R.raw.d);
+                        } else {
+                            mediaPlayer_D.release();
+                            mediaPlayer_D = MediaPlayer.create(MainActivity.this, R.raw.d);
+                            mediaPlayer_D.start();
+                        }
+                    }
+                    buttonD.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonD.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(9);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-2);
+                    }else{
+                        checkMusic(2);
+                    }
+                }
+                return false;
+            }
+        });
+        buttonE.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_E.isPlaying()) {
+                            play(R.raw.e_h);
+                        } else {
+                            mediaPlayer_E.release();
+                            mediaPlayer_E = MediaPlayer.create(MainActivity.this, R.raw.e_h);
+                            mediaPlayer_E.start();
+                        }
+
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_E.isPlaying()) {
+                            play(R.raw.e_l);
+                        } else {
+                            mediaPlayer_E.release();
+                            mediaPlayer_E = MediaPlayer.create(MainActivity.this, R.raw.e_l);
+                            mediaPlayer_E.start();
+                        }
+                    } else {
+                        if (mediaPlayer_E.isPlaying()) {
+                            play(R.raw.e);
+                        } else {
+                            mediaPlayer_E.release();
+                            mediaPlayer_E = MediaPlayer.create(MainActivity.this, R.raw.e);
+                            mediaPlayer_E.start();
+                        }
+                    }
+                    buttonE.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonE.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(10);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-3);
+                    }else{
+                        checkMusic(3);
+                    }
+                }
+                return false;
+            }
+        });
+        buttonF.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_F.isPlaying()) {
+                            play(R.raw.f_h);
+                        } else {
+                            mediaPlayer_F.release();
+                            mediaPlayer_F = MediaPlayer.create(MainActivity.this, R.raw.f_h);
+                            mediaPlayer_F.start();
+                        }
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_F.isPlaying()) {
+                            play(R.raw.f_l);
+                        } else {
+                            mediaPlayer_F.release();
+                            mediaPlayer_F = MediaPlayer.create(MainActivity.this, R.raw.f_l);
+                            mediaPlayer_F.start();
+                        }
+                    } else {
+                        if (mediaPlayer_F.isPlaying()) {
+                            play(R.raw.f);
+                        } else {
+                            mediaPlayer_F.release();
+                            mediaPlayer_F = MediaPlayer.create(MainActivity.this, R.raw.f);
+                            mediaPlayer_F.start();
+                        }
+                    }
+                    buttonF.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonF.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(11);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-4);
+                    }else{
+                        checkMusic(1);
+                    }
+                }
+                return false;
+            }
+        });
+        buttonG.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_G.isPlaying()) {
+                            play(R.raw.g_h);
+                        } else {
+                            mediaPlayer_G.release();
+                            mediaPlayer_G = MediaPlayer.create(MainActivity.this, R.raw.g_h);
+                            mediaPlayer_G.start();
+                        }
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_G.isPlaying()) {
+                            play(R.raw.g_l);
+                        } else {
+                            mediaPlayer_G.release();
+                            mediaPlayer_G = MediaPlayer.create(MainActivity.this, R.raw.g_l);
+                            mediaPlayer_G.start();
+                        }
+                    } else {
+                        if (mediaPlayer_G.isPlaying()) {
+                            play(R.raw.g);
+                        } else {
+                            mediaPlayer_G.release();
+                            mediaPlayer_G = MediaPlayer.create(MainActivity.this, R.raw.g);
+                            mediaPlayer_G.start();
+                        }
+                    }
+                    buttonG.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonG.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(12);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-5);
+                    }else{
+                        checkMusic(5);
+                    }
+                }
+                return false;
+            }
+        });
+        buttonA.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_A.isPlaying()) {
+                            play(R.raw.a_h);
+                        } else {
+                            mediaPlayer_A.release();
+                            mediaPlayer_A = MediaPlayer.create(MainActivity.this, R.raw.a_h);
+                            mediaPlayer_A.start();
+                        }
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_A.isPlaying()) {
+                            play(R.raw.a_l);
+                        } else {
+                            mediaPlayer_A.release();
+                            mediaPlayer_A = MediaPlayer.create(MainActivity.this, R.raw.a_l);
+                            mediaPlayer_A.start();
+                        }
+                    } else {
+                        if (mediaPlayer_A.isPlaying()) {
+                            play(R.raw.a);
+                        } else {
+                            mediaPlayer_A.release();
+                            mediaPlayer_A = MediaPlayer.create(MainActivity.this, R.raw.a);
+                            mediaPlayer_A.start();
+                        }
+                    }
+                    buttonA.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonA.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(13);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-6);
+                    }else{
+                        checkMusic(6);
+                    }
+                }
+                return false;
+            }
+        });
+        buttonB.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    pressTime++;
+                    if (high != 0 && low == 0) {
+                        if (mediaPlayer_B.isPlaying()) {
+                            play(R.raw.b_h);
+                        } else {
+                            mediaPlayer_B.release();
+                            mediaPlayer_B = MediaPlayer.create(MainActivity.this, R.raw.b_h);
+                            mediaPlayer_B.start();
+                        }
+                    } else if (high == 0 && low != 0) {
+                        if (mediaPlayer_B.isPlaying()) {
+                            play(R.raw.b_l);
+                        } else {
+                            mediaPlayer_B.release();
+                            mediaPlayer_B = MediaPlayer.create(MainActivity.this, R.raw.b_l);
+                            mediaPlayer_B.start();
+                        }
+                    } else {
+                        if (mediaPlayer_B.isPlaying()) {
+                            play(R.raw.b);
+                        } else {
+                            mediaPlayer_B.release();
+                            mediaPlayer_B = MediaPlayer.create(MainActivity.this, R.raw.b);
+                            mediaPlayer_B.start();
+                        }
+                    }
+                    buttonB.setBackgroundResource(R.drawable.button_pressed_style);
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    buttonB.setBackgroundResource(R.drawable.button_style);
+                    if(high!=0&&low==0){                 //检查按键是否正确
+                        checkMusic(14);
+                    }else if(high==0&&low!=0){
+                        checkMusic(-7);
+                    }else{
+                        checkMusic(7);
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    //检查按键是否正确
+    private void checkMusic(int buttonNum){
+        if(musicNum==musicMax){
+        }else if(musicNum==(musicMax-1)&&musicSimple[musicNum]==buttonNum){
+            turePercent(musicNum);     //正确个数判断
+            SoundTool soundTool=new SoundTool();
+            soundTool.UnUseSoundTool(musicSimple[musicNum]);
+            chronometer.stop();
+            scoreSum(musicMax);
+            viewInit();
+            musicNum++;
+        }else if(musicNum!=(musicMax-1)&&musicSimple[musicNum]==buttonNum){
+            turePercent(musicNum);     //正确个数判断
+            SoundTool soundTool=new SoundTool();
+            soundTool.UnUseSoundTool(musicSimple[musicNum]);
+            soundTool.UseSoundTool(musicSimple[musicNum+1]);
+            musicNum++;
+            sound();
+        } else{
+            turePercent(musicNum-1);     //正确个数判断
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

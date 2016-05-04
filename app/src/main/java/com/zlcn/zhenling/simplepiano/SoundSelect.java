@@ -15,7 +15,7 @@ import android.widget.ListView;
  */
 public class SoundSelect extends Activity {
 
-    private String[] data={"小星星","茉莉花"};
+    private String[] data={"化蝶","茉莉花","菊花台","春江花月夜","青花瓷(高难度)"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,21 @@ public class SoundSelect extends Activity {
                         Intent intent1=new Intent(SoundSelect.this,MainActivity.class);
                         intent1.putExtra("soundNum",1);
                         setResult(RESULT_OK,intent1);
+                        finish();
+                    case 2:
+                        Intent intent2=new Intent(SoundSelect.this,MainActivity.class);
+                        intent2.putExtra("soundNum",2);
+                        setResult(RESULT_OK,intent2);
+                        finish();
+                    case 3:
+                        Intent intent3=new Intent(SoundSelect.this,MainActivity.class);
+                        intent3.putExtra("soundNum",3);
+                        setResult(RESULT_OK,intent3);
+                        finish();
+                    case 4:
+                        Intent intent4=new Intent(SoundSelect.this,MainActivity.class);
+                        intent4.putExtra("soundNum",4);
+                        setResult(RESULT_OK,intent4);
                         finish();
                 }
             }
