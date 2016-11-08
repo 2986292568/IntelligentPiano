@@ -68,6 +68,8 @@ public class MainActivity extends FirstActivity{
             firstSp.edit().putBoolean("firstUse",false).commit();
         }
 
+        sound();
+
         button_LOW.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
